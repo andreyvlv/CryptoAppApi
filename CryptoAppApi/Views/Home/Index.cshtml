@@ -1,0 +1,85 @@
+﻿@model CryptoAppApi.Models.IndexViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="text-center">    
+    @foreach (var entry in Model.Entries)
+    {
+        var lowName = entry.Name.ToString().ToLower();
+
+        <div class="container" style="max-width:1160px;">
+            <div class="row" style="flex-wrap:unset;">
+                <div class="col-lg-9 col-md-9 col-sm-9">
+                    <canvas id="@lowName"></canvas>
+                </div>
+                <div class="col-lg-auto col-md-auto col-sm-auto">
+                    <div class="container" style="margin-left:20px;">
+                        <div class="row"><h1 class="display-4">@Model.TypeToCode[entry.Name]</h1></div>                       
+                        <div class="row"><h2>$@entry.CurrentValue</h2></div>
+                        <div class="row">
+                            <div class="col-sm-8" style="margin-left:-15px;">
+                                <h2>@entry.Change24H%</h2>
+                            </div>
+                            <div class="col-sm-4">
+                                @if (entry.Change24H[0] == '-')
+                                {
+                                    <img src="/images/yield.svg" class="triangle-svg-down" />
+                                }
+                                else
+                                {
+                                    <img src="/images/yield.svg" class="triangle-svg-up" />
+                                }
+                            </div>
+                        </div>                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <script>
+        // === include 'setup' then 'config' above ===
+
+            const @(lowName)entries = `@Html.Raw(JsonConvert.SerializeObject(entry.History))`;
+            const @(lowName)json = JSON.parse(@(lowName)entries);
+            const @(lowName)labels = @(lowName)json.map(x => x.Date);
+            const @(lowName)values = @(lowName)json.map(x => parseFloat(x.Price));
+
+            const @(lowName)data = {
+                labels: @(lowName)labels,
+                datasets: [{
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: @(lowName)values,
+                    label: `@lowName`,
+                    pointRadius: 0,
+                    pointHoverRadius: 3,
+                }]
+            };
+
+            const @(lowName)config = {
+                type: 'line',
+                data: @(lowName)data,                
+                options: {
+                    aspectRatio: 2.8,
+                    borderWidth: 2,
+                    maintainAspectRatio: true,
+                    responsive: true,
+                    scales: {
+                        x: {
+                            ticks: {
+                                maxTicksLimit: 15,
+                            }
+                        }
+                    }
+                }
+            };
+
+            var @(lowName)myChart = new Chart(
+                document.getElementById('@lowName'),
+                @(lowName)config
+            );
+        </script>
+    }
+</div>
