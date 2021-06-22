@@ -19,7 +19,8 @@ namespace CryptoAppApi.Controllers
         }
 
         public IActionResult Index()
-        {           
+        {   
+            // create indexviewmodel
             var btc = GetCurrencyByType(CurrencyType.Bitcoin);
             var ethereum = GetCurrencyByType(CurrencyType.Ethereum);
             var monero = GetCurrencyByType(CurrencyType.Monero);
@@ -51,7 +52,7 @@ namespace CryptoAppApi.Controllers
 
             var currentDataEntry = JsonConvert.DeserializeObject<CurrentJson>(currentDataResponse.Content);
 
-            // forming indexviewmodel
+            // forming cuurency to indexviewmodel
             var history = new List<HistoryData>();
 
             foreach (var entry in historyEntries.data)
